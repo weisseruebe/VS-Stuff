@@ -5,8 +5,6 @@ Created on 10.04.2012
 '''
 import random
 import string
-import sys
-from idlelib.textView import textFile
 
 def countLetters(text):
     letterCount = dict()
@@ -17,7 +15,7 @@ def countLetters(text):
     return letterCount
 
 def toLowerCase(text):
-    delete_table  = string.maketrans(string.ascii_lowercase, ' ' * len(string.ascii_lowercase))
+    delete_table  = string.maketrans(string.ascii_lowercase + " " , ' ' * (len(string.ascii_lowercase)+1))
     return text.lower().translate(None,delete_table);
 
 frequencies = {
@@ -50,12 +48,19 @@ frequencies = {
     }
 
 frequenciesSorted = sorted(frequencies,key=frequencies.get,reverse=True);
-phrase = open("",'r').read();
+phrase = open("../finnland.txt",'r').read();
+phrase = toLowerCase(phrase)
 alpha = map(chr,range(ord('a'),ord('z')+1))
+
+#------
+letterCount = countLetters(toLowerCase(open("../parforce.txt",'r').read()))
+frequenciesSorted = sorted(letterCount, key=letterCount.get, reverse=True)
+#------
 
 shuffled = alpha[:]
 random.shuffle(shuffled)
 codeTable = dict(zip(alpha,shuffled))
+codeTable[' '] = ' '
 
 crypted = map(codeTable.get,phrase)
 
@@ -64,16 +69,20 @@ cryptedFrequencies = sorted(letterCount, key=letterCount.get, reverse=True)
 
 cryptedTxt="".join(crypted)
 decodeTable = dict(zip(cryptedFrequencies,frequenciesSorted))
+decodeTable[' '] = ' '
+
 print cryptedTxt
 decrypted = map(decodeTable.get,cryptedTxt)
 
 
-print "Code table"
-print codeTable
-print "Letter count"
-print letterCount
-print "Crypted sorted"
-print cryptedFrequencies
-print frequenciesSorted
-print "Decrypted"
+#print "Code table"
+#print codeTable
+#print "Letter count"
+#print letterCount
+#print "Crypted sorted"
+#print cryptedFrequencies
+#print frequenciesSorted
+print "Crypted"
+print "".join(decrypted)
+#print "Decrypted"
 print decrypted
