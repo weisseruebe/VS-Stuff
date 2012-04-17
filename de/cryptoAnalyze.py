@@ -59,10 +59,10 @@ frequenciesSorted = sorted(letterCount, key=letterCount.get, reverse=True)
 
 shuffled = alpha[:]
 random.shuffle(shuffled)
-codeTable = dict(zip(alpha,shuffled))
-codeTable[' '] = ' '
+decodeTable = dict(zip(alpha,shuffled))
+decodeTable[' '] = ' '
 
-crypted = map(codeTable.get,phrase)
+crypted = map(decodeTable.get,phrase)
 
 letterCount = countLetters(crypted)
 cryptedFrequencies = sorted(letterCount, key=letterCount.get, reverse=True)
@@ -76,7 +76,7 @@ decrypted = map(decodeTable.get,cryptedTxt)
 
 
 #print "Code table"
-#print codeTable
+#print decodeTable
 #print "Letter count"
 #print letterCount
 #print "Crypted sorted"

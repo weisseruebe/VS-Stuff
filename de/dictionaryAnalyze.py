@@ -4,17 +4,15 @@ Created on 10.04.2012
 @author: andreasrettig
 '''
 
-decWord = "hillp"
-dicWord = "hallo"
 
+""" Return the key of dictionary dic given the value"""
 def find_key(dic, val):
-    """return the key of dictionary dic given the value"""
     return [k for k, v in dic.iteritems() if v == val][0]
 
-def findWrongCharacters(decString, origString):
-    charList = dict()
+""" Creates a dictionary with the letters to be exchanged and their probablity """
+def findWrongCharacters(decString, origString, charList):
     index = 0
-    while index < len(decWord):
+    while index < len(decString):
         if decString[index] != origString[index]:
             wrongChar = decString[index]
             rightChar = origString[index]
@@ -27,35 +25,41 @@ def findWrongCharacters(decString, origString):
                 charList[wrongChar][rightChar] += 1
         
         index += 1
-    return charList
-    
-def reduceDecryptTable(updateTable):
-    newTable = dict()
+
+""" Reduces the updateTable values to the one with the most occurencies"""
+def reduceDecodeTable(updateTable):
+    exchangeTable = dict()
     for char in updateTable:
         charDict = updateTable[char]
-        newTable[char] = max(charDict, key=charDict.get)
-    return newTable
+        exchangeTable[char] = max(charDict, key=charDict.get)
+    return exchangeTable
 
-#Change the wrong output chars
-def updateCodeTable(codeTable, updateTable):
+""" Changes the decoded letter in the codetable to the one in the updatetable 
+that is given under its key """
+def updateDecodeTable(decodeTable, updateTable):
     for char in updateTable:
-        print char
-        if char in codeTable.values():
-            key = find_key(codeTable,char)
-            codeTable[key] = updateTable[char]
-            print char+" -> "+codeTable[key]
-    return codeTable
+        if char in decodeTable.values():
+            key = find_key(decodeTable,char)
+            decodeTable[key] = updateTable[char]
+            print char+" -> "+decodeTable[key]
+    return decodeTable
 
 if __name__ == '__main__':
-    newTable = findWrongCharacters(decWord,dicWord)
-    codeTable = dict()
-    codeTable['h'] = 'h'
-    codeTable['k'] = 'i'
-    codeTable['l'] = 'l'
-    codeTable['m'] = 'p'
+    exchangeTable = dict()
+    findWrongCharacters("hillp","hallo",exchangeTable)
+    findWrongCharacters("bauv","baum",exchangeTable)
 
-    print codeTable
-    reduced = reduceDecryptTable(newTable)
-    print updateCodeTable(codeTable, reduced) 
-    #print newTable
+    print exchangeTable
+
+    decodeTable = dict()
+    decodeTable['h'] = 'h'
+    decodeTable['k'] = 'i'
+    decodeTable['l'] = 'l'
+    decodeTable['m'] = 'p'
+    decodeTable['s'] = 't'
+    decodeTable['r'] = 'v'
+
+    print decodeTable
+    reduced = reduceDecodeTable(exchangeTable)
+    print updateDecodeTable(decodeTable, reduced) 
     
