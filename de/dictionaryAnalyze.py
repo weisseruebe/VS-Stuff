@@ -5,16 +5,16 @@ Created on 10.04.2012
 '''
 
 decWord = "Hbllpppi"
-dicWord = "Hallommo"
+dicWord = "Halloomo"
 
-charList = dict()
 
-def matchCharacters():
+def findWrongCharacters(decString, origString):
+    charList = dict()
     index = 0
     while index < len(decWord):
-        if decWord[index] != dicWord[index]:
-            wrongChar = decWord[index]
-            rightChar = dicWord[index]
+        if decString[index] != origString[index]:
+            wrongChar = decString[index]
+            rightChar = origString[index]
             if not (wrongChar in charList):
                 charList[wrongChar] = dict()
                 
@@ -24,7 +24,21 @@ def matchCharacters():
                 charList[wrongChar][rightChar] += 1
         
         index += 1
+    return charList
     
+def reduceDecryptTable(table, updateTable):
+    newTable = dict()
+    for char in updateTable:
+        charDict = updateTable[char]
+        newTable[char] = max(charDict, key=charDict.get)
+    return newTable
+
 if __name__ == '__main__':
-    matchCharacters()
-    print charList
+    newTable = findWrongCharacters(decWord,dicWord)
+    codeTable = dict()
+    codeTable['a'] = 'z'
+    codeTable['z'] = 'a'
+    print newTable
+    print reduceDecryptTable(codeTable, newTable)
+    #print newTable
+    
