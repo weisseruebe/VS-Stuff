@@ -106,28 +106,39 @@ for word in dictionary:
     dictionaryLen[length].append(word)
     
 exchangeTable = dict()
-rounds = 0
+matchedWords = 0
 
 for word in decryptedTxt.split(" "):
-    print "Searching "+word
+    #print "Searching "+word
     #similarWords = findSimilarWords(dictionary,word)
-    if (len(word)>0):
+    if (len(word)>3):
         wordsWithLength = dictionaryLen[len(word)]
         similarWords = findSimilarWords(wordsWithLength,word)
 
-        print word+" is similar to "+str(similarWords)
-        """Nur eindeutige Treffer"""
-        if (len(similarWords)==1):
+        #print word+" is similar to "+str(similarWords)
+        if (len(similarWords)<3) and (len(similarWords)>0):
             for similarWord in similarWords:
-                findWrongCharacters(similarWord, word, exchangeTable)
-                pprint (exchangeTable)
-                pprint (reduceDecodeTable(exchangeTable))
-             
-            print rounds
-            if (rounds>10): break
-            rounds+=1
+                findWrongCharacters(word, similarWord, exchangeTable)
+            print word+" is similar to "+str(similarWord)
+            #pprint (exchangeTable)
+            print matchedWords
+            if (matchedWords>30): break
+            matchedWords+=1
+
+reducedTable = reduceDecodeTable(exchangeTable)
+pprint (exchangeTable)
+print reducedTable
+print decryptedTxt[0:1000]
+
+newDec = ""
+for char in decryptedTxt:
+    if (reducedTable.has_key(char)):
+        newDec += reducedTable[char]
+    else:
+        newDec += char    
     
-decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))    
-decrypted = map(decodeTable.get,cryptedTxt)
-print "".join(decrypted)
+print newDec[0:1000]
+#decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))    
+#decrypted = map(decodeTable.get,cryptedTxt)
+#print ("".join(decrypted))
     

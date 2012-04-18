@@ -15,9 +15,9 @@ def findWrongCharacters(decString, origString, charList):
     index = 0
     while index < len(decString):
         if decString[index] != origString[index]:
-            rightChar = decString[index]
-            wrongChar = origString[index]
-            #print "Wrong "+wrongChar+" Right "+rightChar
+            wrongChar = decString[index]
+            rightChar = origString[index]
+            print "Wrong "+wrongChar+" Right "+rightChar
             if not (wrongChar in charList):
                 charList[wrongChar] = dict()
                                
@@ -34,7 +34,7 @@ def reduceDecodeTable(updateTable):
     for char in updateTable:
         charDict = updateTable[char]
         largestChar = max(charDict, key=charDict.get)
-        if (charDict[largestChar] >= 1): exchangeTable[char] = largestChar
+        if (charDict[largestChar] >= 2): exchangeTable[char] = largestChar
     return exchangeTable
 
 """ Changes the decoded letter in the codetable to the one in the updatetable 
@@ -72,7 +72,7 @@ def patternMatch(string1, string2):
 def findSimilarWords(dictionary,word):
     similarWords = []
     for dictWord in dictionary:
-        if patternMatch(word, dictWord) > 0.5:
+        if patternMatch(word, dictWord) > 0.7:
             similarWords.append(dictWord)
     return similarWords
                  
