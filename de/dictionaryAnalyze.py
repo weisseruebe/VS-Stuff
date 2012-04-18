@@ -67,19 +67,19 @@ def patternMatch(string1, string2):
         index += 1
     return identicalChars/float(len(string1))
         
-def findSimilarWords(dictionary,words):
-    for word in words:
-        for dictWord in dictionary:
-            if patternMatch(word, dictWord) > 0.4:
-                print word+" "+dictWord
-           
+def findSimilarWords(dictionary,word):
+    similarWords = []
+    for dictWord in dictionary:
+        if patternMatch(word, dictWord) > 0.5:
+            similarWords.append(dictWord)
+    return similarWords
                  
 if __name__ == '__main__':
     dictionaryfile = open('../ngerman.txt', 'r')
     dictionary = set(lower(dictionaryfile.read()).split("\n"))
     dictionaryfile.close()
     
-    findSimilarWords(dictionary, ["sohzetisoh"])
+    findSimilarWords(dictionary, "nurtecrupa")
     
     exchangeTable = dict()
     findWrongCharacters("hillp","hallo",exchangeTable)

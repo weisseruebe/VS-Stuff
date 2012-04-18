@@ -6,6 +6,11 @@ Created on 10.04.2012
 @author: andreasrettig
 '''
 import random
+import dictionaryAnalyze
+from string import lower
+
+from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters,\
+    reduceDecodeTable, updateDecodeTable
 
 def countLetters(text):
     letterCount = dict()
@@ -47,15 +52,15 @@ frequencies = {
         'y': 0.04,
         'z': 1.13
     }
+alpha = map(chr,range(ord('a'),ord('z')+1))
 
-frequenciesSorted = sorted(frequencies,key=frequencies.get,reverse=True);
 phrase = open("../finnland.txt",'r').read();
 phrase = toLowerCase(phrase)
 print phrase
-alpha = map(chr,range(ord('a'),ord('z')+1))
 
 #------
 letterCount = countLetters(toLowerCase(open("../parforce.txt",'r').read()))
+#frequenciesSorted = sorted(frequencies,key=frequencies.get,reverse=True);
 frequenciesSorted = sorted(letterCount, key=letterCount.get, reverse=True)
 #------
 
@@ -65,18 +70,16 @@ decodeTable = dict(zip(alpha,shuffled))
 decodeTable[' '] = ' '
 
 crypted = map(decodeTable.get,phrase)
+cryptedTxt="".join(crypted)
 
 letterCount = countLetters(crypted)
 cryptedFrequencies = sorted(letterCount, key=letterCount.get, reverse=True)
 
-print crypted
-cryptedTxt="".join(crypted)
 decodeTable = dict(zip(cryptedFrequencies,frequenciesSorted))
 decodeTable[' '] = ' '
 
-print cryptedTxt
 decrypted = map(decodeTable.get,cryptedTxt)
-
+decryptedTxt="".join(decrypted)
 
 #print "Code table"
 #print decodeTable
@@ -86,6 +89,24 @@ decrypted = map(decodeTable.get,cryptedTxt)
 #print cryptedFrequencies
 #print frequenciesSorted
 print "Crypted"
-print "".join(decrypted)
-#print "Decrypted"
-#print decrypted
+print cryptedTxt
+print "Decrypted"
+print decryptedTxt
+
+dictionaryfile = open('../ngerman.txt', 'r')
+dictionary = set(lower(dictionaryfile.read()).split("\n"))
+dictionaryfile.close()
+
+exchangeTable = dict()
+
+for word in decryptedTxt.split(" "):
+    print "Searching "+word
+    similarWords = findSimilarWords(dictionary,word)
+    print word+" is similar to "+str(similarWords)
+    for similarWord in similarWords:
+        findWrongCharacters(similarWord, word, exchangeTable)
+    print (exchangeTable)
+    decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))
+    decrypted = map(decodeTable.get,cryptedTxt)
+    print decrypted
+    
