@@ -122,7 +122,7 @@ for word in decryptedTxt.split(" "):
             print word+" is similar to "+str(similarWord)
             #pprint (exchangeTable)
             print matchedWords
-            if (matchedWords>30): break
+            if (matchedWords>50): break
             matchedWords+=1
 
 reducedTable = reduceDecodeTable(exchangeTable)

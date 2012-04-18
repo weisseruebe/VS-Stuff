@@ -17,7 +17,6 @@ def findWrongCharacters(decString, origString, charList):
         if decString[index] != origString[index]:
             wrongChar = decString[index]
             rightChar = origString[index]
-            print "Wrong "+wrongChar+" Right "+rightChar
             if not (wrongChar in charList):
                 charList[wrongChar] = dict()
                                
