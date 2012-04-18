@@ -98,21 +98,34 @@ dictionaryfile = open('../ngerman.txt', 'r')
 dictionary = set(lower(dictionaryfile.read()).split("\n"))
 dictionaryfile.close()
 
+dictionaryLen = dict()
+for word in dictionary:
+    length = len(word)
+    if not (dictionaryLen.has_key(length)):
+        dictionaryLen[length] = []
+    dictionaryLen[length].append(word)
+    
 exchangeTable = dict()
 rounds = 0
 
 for word in decryptedTxt.split(" "):
     print "Searching "+word
-    similarWords = findSimilarWords(dictionary,word)
-    print word+" is similar to "+str(similarWords)
-    """Nur eindeutige Treffer"""
-    if (len(similarWords)==2):
-        for similarWord in similarWords:
-            findWrongCharacters(similarWord, word, exchangeTable)
-            pprint (exchangeTable)
-            pprint (reduceDecodeTable(exchangeTable))
-        if (rounds>10): break
-        rounds+=1
+    #similarWords = findSimilarWords(dictionary,word)
+    if (len(word)>0):
+        wordsWithLength = dictionaryLen[len(word)]
+        similarWords = findSimilarWords(wordsWithLength,word)
+
+        print word+" is similar to "+str(similarWords)
+        """Nur eindeutige Treffer"""
+        if (len(similarWords)==1):
+            for similarWord in similarWords:
+                findWrongCharacters(similarWord, word, exchangeTable)
+                pprint (exchangeTable)
+                pprint (reduceDecodeTable(exchangeTable))
+             
+            print rounds
+            if (rounds>10): break
+            rounds+=1
     
 decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))    
 decrypted = map(decodeTable.get,cryptedTxt)
