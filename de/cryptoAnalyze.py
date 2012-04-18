@@ -7,6 +7,7 @@ Created on 10.04.2012
 '''
 import random
 import dictionaryAnalyze
+from pprint import pprint
 from string import lower
 
 from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters,\
@@ -98,15 +99,22 @@ dictionary = set(lower(dictionaryfile.read()).split("\n"))
 dictionaryfile.close()
 
 exchangeTable = dict()
+rounds = 0
 
 for word in decryptedTxt.split(" "):
     print "Searching "+word
     similarWords = findSimilarWords(dictionary,word)
     print word+" is similar to "+str(similarWords)
-    for similarWord in similarWords:
-        findWrongCharacters(similarWord, word, exchangeTable)
-    print (exchangeTable)
-    decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))
-    decrypted = map(decodeTable.get,cryptedTxt)
-    print decrypted
+    """Nur eindeutige Treffer"""
+    if (len(similarWords)==2):
+        for similarWord in similarWords:
+            findWrongCharacters(similarWord, word, exchangeTable)
+            pprint (exchangeTable)
+            pprint (reduceDecodeTable(exchangeTable))
+        if (rounds>10): break
+        rounds+=1
+    
+decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))    
+decrypted = map(decodeTable.get,cryptedTxt)
+print "".join(decrypted)
     

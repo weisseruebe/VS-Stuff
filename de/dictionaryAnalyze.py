@@ -15,11 +15,12 @@ def findWrongCharacters(decString, origString, charList):
     index = 0
     while index < len(decString):
         if decString[index] != origString[index]:
-            wrongChar = decString[index]
-            rightChar = origString[index]
+            rightChar = decString[index]
+            wrongChar = origString[index]
+            #print "Wrong "+wrongChar+" Right "+rightChar
             if not (wrongChar in charList):
                 charList[wrongChar] = dict()
-                
+                               
             if not (rightChar in charList[wrongChar]):
                 charList[wrongChar][rightChar] = 1
             else:  
@@ -32,7 +33,8 @@ def reduceDecodeTable(updateTable):
     exchangeTable = dict()
     for char in updateTable:
         charDict = updateTable[char]
-        exchangeTable[char] = max(charDict, key=charDict.get)
+        largestChar = max(charDict, key=charDict.get)
+        if (charDict[largestChar] >= 1): exchangeTable[char] = largestChar
     return exchangeTable
 
 """ Changes the decoded letter in the codetable to the one in the updatetable 
