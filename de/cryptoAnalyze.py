@@ -1,10 +1,11 @@
+# coding=UTF-8
+
 '''
 Created on 10.04.2012
 
 @author: andreasrettig
 '''
 import random
-import string
 
 def countLetters(text):
     letterCount = dict()
@@ -15,8 +16,8 @@ def countLetters(text):
     return letterCount
 
 def toLowerCase(text):
-    delete_table  = string.maketrans(string.ascii_lowercase + " " , ' ' * (len(string.ascii_lowercase)+1))
-    return text.lower().translate(None,delete_table);
+    #delete_table = string.maketrans(string.ascii_lowercase + " " , ' ' * (len(string.ascii_lowercase)+1))
+    return ''.join(e for e in text if e.isalpha() or e == " ").lower()
 
 frequencies = {
         'a': 6.51,
@@ -50,6 +51,7 @@ frequencies = {
 frequenciesSorted = sorted(frequencies,key=frequencies.get,reverse=True);
 phrase = open("../finnland.txt",'r').read();
 phrase = toLowerCase(phrase)
+print phrase
 alpha = map(chr,range(ord('a'),ord('z')+1))
 
 #------
@@ -67,6 +69,7 @@ crypted = map(decodeTable.get,phrase)
 letterCount = countLetters(crypted)
 cryptedFrequencies = sorted(letterCount, key=letterCount.get, reverse=True)
 
+print crypted
 cryptedTxt="".join(crypted)
 decodeTable = dict(zip(cryptedFrequencies,frequenciesSorted))
 decodeTable[' '] = ' '
@@ -85,4 +88,4 @@ decrypted = map(decodeTable.get,cryptedTxt)
 print "Crypted"
 print "".join(decrypted)
 #print "Decrypted"
-print decrypted
+#print decrypted
