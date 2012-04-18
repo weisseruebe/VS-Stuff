@@ -6,12 +6,11 @@ Created on 10.04.2012
 @author: andreasrettig
 '''
 import random
-import dictionaryAnalyze
 from pprint import pprint
 from string import lower
+from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters, reduceDecodeTable
 
-from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters,\
-    reduceDecodeTable, updateDecodeTable
+
 
 def countLetters(text):
     letterCount = dict()
@@ -22,7 +21,6 @@ def countLetters(text):
     return letterCount
 
 def toLowerCase(text):
-    #delete_table = string.maketrans(string.ascii_lowercase + " " , ' ' * (len(string.ascii_lowercase)+1))
     return ''.join(e for e in text if e.isalpha() or e == " ").lower()
 
 frequencies = {
@@ -82,17 +80,10 @@ decodeTable[' '] = ' '
 decrypted = map(decodeTable.get,cryptedTxt)
 decryptedTxt="".join(decrypted)
 
-#print "Code table"
-#print decodeTable
-#print "Letter count"
-#print letterCount
-#print "Crypted sorted"
-#print cryptedFrequencies
-#print frequenciesSorted
 print "Crypted"
-print cryptedTxt
+print cryptedTxt[0:1000]
 print "Decrypted"
-print decryptedTxt
+print decryptedTxt[0:1000]
 
 dictionaryfile = open('../ngerman.txt', 'r')
 dictionary = set(lower(dictionaryfile.read()).split("\n"))
@@ -104,31 +95,29 @@ for word in dictionary:
     if not (dictionaryLen.has_key(length)):
         dictionaryLen[length] = []
     dictionaryLen[length].append(word)
-    
+  
+#-----------
 exchangeTable = dict()
 matchedWords = 0
 
 for word in decryptedTxt.split(" "):
-    #print "Searching "+word
-    #similarWords = findSimilarWords(dictionary,word)
     if (len(word)>3):
         wordsWithLength = dictionaryLen[len(word)]
         similarWords = findSimilarWords(wordsWithLength,word)
 
-        #print word+" is similar to "+str(similarWords)
         if (len(similarWords)<3) and (len(similarWords)>0):
             for similarWord in similarWords:
                 findWrongCharacters(word, similarWord, exchangeTable)
-            print word+" is similar to "+str(similarWord)
-            #pprint (exchangeTable)
+                print word+" is similar to "+str(similarWord)
             print matchedWords
-            if (matchedWords>50): break
+            if (matchedWords>70): break
             matchedWords+=1
 
 reducedTable = reduceDecodeTable(exchangeTable)
 pprint (exchangeTable)
 print reducedTable
 print decryptedTxt[0:1000]
+#------------------
 
 newDec = ""
 for char in decryptedTxt:

@@ -33,7 +33,8 @@ def reduceDecodeTable(updateTable):
     for char in updateTable:
         charDict = updateTable[char]
         largestChar = max(charDict, key=charDict.get)
-        if (charDict[largestChar] >= 2): exchangeTable[char] = largestChar
+        if (charDict[largestChar] >= 4): 
+            exchangeTable[char] = largestChar
     return exchangeTable
 
 """ Changes the decoded letter in the codetable to the one in the updatetable 
