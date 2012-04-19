@@ -4,8 +4,6 @@ Created on 10.04.2012
 @author: andreasrettig
 '''
 
-from string import lower
-
 """ Return the key of dictionary dic given the value"""
 def find_key(dic, val):
     return [k for k, v in dic.iteritems() if v == val][0]
@@ -68,36 +66,11 @@ def patternMatch(string1, string2):
             
         index += 1
     return identicalChars/float(len(string1))
-        
-def findSimilarWords(dictionary,word):
+ 
+"""Finds words in the dictionary that are similar to the given word"""       
+def findSimilarWords(dictionary, word, minWordSimilarity):
     similarWords = []
     for dictWord in dictionary:
-        if patternMatch(word, dictWord) > 0.7:
+        if patternMatch(word, dictWord) > minWordSimilarity:
             similarWords.append(dictWord)
     return similarWords
-                 
-if __name__ == '__main__':
-    dictionaryfile = open('../ngerman.txt', 'r')
-    dictionary = set(lower(dictionaryfile.read()).split("\n"))
-    dictionaryfile.close()
-    
-    findSimilarWords(dictionary, "nurtecrupa")
-    
-    exchangeTable = dict()
-    findWrongCharacters("hillp","hallo",exchangeTable)
-    findWrongCharacters("bauv","baum",exchangeTable)
-
-    print exchangeTable
-
-    decodeTable = dict()
-    decodeTable['h'] = 'h'
-    decodeTable['k'] = 'i'
-    decodeTable['l'] = 'l'
-    decodeTable['m'] = 'p'
-    decodeTable['s'] = 't'
-    decodeTable['r'] = 'v'
-
-    print decodeTable
-    reduced = reduceDecodeTable(exchangeTable)
-    print updateDecodeTable(decodeTable, reduced) 
-    

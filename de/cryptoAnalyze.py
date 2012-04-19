@@ -7,10 +7,13 @@ Created on 10.04.2012
 '''
 import random
 from pprint import pprint
-from string import lower
+from string import lower, maketrans
 from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters, reduceDecodeTable
 
-
+minWordSimilarity = 0.7
+minWordLength = 4
+maxSimilarWords = 3
+matchWords = 10
 
 def countLetters(text):
     letterCount = dict()
@@ -101,16 +104,16 @@ exchangeTable = dict()
 matchedWords = 0
 
 for word in decryptedTxt.split(" "):
-    if (len(word)>3):
+    if (len(word)>=minWordLength):
         wordsWithLength = dictionaryLen[len(word)]
-        similarWords = findSimilarWords(wordsWithLength,word)
+        similarWords = findSimilarWords(wordsWithLength,word,minWordSimilarity)
 
-        if (len(similarWords)<3) and (len(similarWords)>0):
+        if (len(similarWords) <= maxSimilarWords) and (len(similarWords) > 0):
             for similarWord in similarWords:
                 findWrongCharacters(word, similarWord, exchangeTable)
                 print word+" is similar to "+str(similarWord)
-            print matchedWords
-            if (matchedWords>70): break
+            print "Progress:"+str(matchedWords/float(matchWords))
+            if (matchedWords>=matchWords): break
             matchedWords+=1
 
 reducedTable = reduceDecodeTable(exchangeTable)
@@ -119,14 +122,14 @@ print reducedTable
 print decryptedTxt[0:1000]
 #------------------
 
-newDec = ""
-for char in decryptedTxt:
-    if (reducedTable.has_key(char)):
-        newDec += reducedTable[char]
-    else:
-        newDec += char    
+inTab = ""
+outTab = ""
+for key in reducedTable:
+    inTab += key
+    outTab+= reducedTable[key]
+transTab = maketrans(inTab, outTab)
     
-print newDec[0:1000]
+print decryptedTxt.translate(transTab)[0:1000]
 #decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))    
 #decrypted = map(decodeTable.get,cryptedTxt)
 #print ("".join(decrypted))
