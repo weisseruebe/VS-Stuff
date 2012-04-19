@@ -26,12 +26,12 @@ def findWrongCharacters(decString, origString, charList):
         index += 1
 
 """ Reduces the updateTable values to the one with the most occurencies"""
-def reduceDecodeTable(updateTable):
+def reduceDecodeTable(updateTable, minOccurencies):
     exchangeTable = dict()
     for char in updateTable:
         charDict = updateTable[char]
         largestChar = max(charDict, key=charDict.get)
-        if (charDict[largestChar] >= 4): 
+        if (charDict[largestChar] >= minOccurencies): 
             exchangeTable[char] = largestChar
     return exchangeTable
 

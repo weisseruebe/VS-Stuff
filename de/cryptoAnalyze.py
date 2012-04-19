@@ -10,10 +10,23 @@ from pprint import pprint
 from string import lower, maketrans
 from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters, reduceDecodeTable
 
+"""The minimal word similarity to be taken as similar"""
 minWordSimilarity = 0.7
+
+"""The minimal word length for accounted words"""
 minWordLength = 4
+
+"""The maximal number of similar words for a word to be taken for the improvement"""
 maxSimilarWords = 3
-matchWords = 10
+
+"""The number of words to be taken for the dictionary improvement"""
+matchWords = 50
+
+"""The minimal number of occurencies for a wrong letter to be regarded as valid"""
+minOccurencies = 3
+
+freqFile = "../parforce.txt"
+textFile = "../finnland.txt"
 
 def countLetters(text):
     letterCount = dict()
@@ -54,14 +67,16 @@ frequencies = {
         'y': 0.04,
         'z': 1.13
     }
+
 alpha = map(chr,range(ord('a'),ord('z')+1))
 
-phrase = open("../finnland.txt",'r').read();
+phrase = open(textFile,'r').read();
 phrase = toLowerCase(phrase)
 print phrase
 
 #------
-letterCount = countLetters(toLowerCase(open("../parforce.txt",'r').read()))
+print "Creating frequencies from "+freqFile
+letterCount = countLetters(toLowerCase(open(freqFile,'r').read()))
 #frequenciesSorted = sorted(frequencies,key=frequencies.get,reverse=True);
 frequenciesSorted = sorted(letterCount, key=letterCount.get, reverse=True)
 #------
@@ -83,15 +98,19 @@ decodeTable[' '] = ' '
 decrypted = map(decodeTable.get,cryptedTxt)
 decryptedTxt="".join(decrypted)
 
-print "Crypted"
+print "Encrypted"
 print cryptedTxt[0:1000]
-print "Decrypted"
+print "Decrypted with frequencies"
 print decryptedTxt[0:1000]
 
+#--------
+print "Reading dictionary"
 dictionaryfile = open('../ngerman.txt', 'r')
 dictionary = set(lower(dictionaryfile.read()).split("\n"))
 dictionaryfile.close()
+#--------
 
+print "Sorting dictionary by length"
 dictionaryLen = dict()
 for word in dictionary:
     length = len(word)
@@ -100,6 +119,8 @@ for word in dictionary:
     dictionaryLen[length].append(word)
   
 #-----------
+
+print "Searching for wrong characters"
 exchangeTable = dict()
 matchedWords = 0
 
@@ -116,7 +137,7 @@ for word in decryptedTxt.split(" "):
             if (matchedWords>=matchWords): break
             matchedWords+=1
 
-reducedTable = reduceDecodeTable(exchangeTable)
+reducedTable = reduceDecodeTable(exchangeTable, minOccurencies)
 pprint (exchangeTable)
 print reducedTable
 print decryptedTxt[0:1000]
