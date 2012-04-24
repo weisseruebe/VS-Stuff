@@ -7,8 +7,8 @@ Created on 10.04.2012
 '''
 import random
 from pprint import pprint
-from string import lower, maketrans
-from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters, reduceDecodeTable
+from string import lower
+from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters, reduceDecodeTable, updateDecodeTable
 
 """The minimal word similarity to be taken as similar"""
 minWordSimilarity = 0.7
@@ -20,13 +20,21 @@ minWordLength = 4
 maxSimilarWords = 3
 
 """The number of words to be taken for the dictionary improvement"""
-matchWords = 50
+matchWords = 60
 
 """The minimal number of occurencies for a wrong letter to be regarded as valid"""
 minOccurencies = 3
 
 freqFile = "../parforce.txt"
 textFile = "../finnland.txt"
+
+def codetableSimilarity(oldTable,newTable):
+    equal = 0
+    swapped = dict (zip(newTable.values(),newTable.keys()))
+    for key in oldTable:
+        if swapped.has_key(key) and oldTable[key] == swapped[key]:
+                equal += 1
+    return equal/float(len(oldTable))
 
 def countLetters(text):
     letterCount = dict()
@@ -73,9 +81,11 @@ alpha = map(chr,range(ord('a'),ord('z')+1))
 phrase = open(textFile,'r').read();
 phrase = toLowerCase(phrase)
 print phrase
+print
 
 #------
 print "Creating frequencies from "+freqFile
+print
 letterCount = countLetters(toLowerCase(open(freqFile,'r').read()))
 #frequenciesSorted = sorted(frequencies,key=frequencies.get,reverse=True);
 frequenciesSorted = sorted(letterCount, key=letterCount.get, reverse=True)
@@ -83,10 +93,10 @@ frequenciesSorted = sorted(letterCount, key=letterCount.get, reverse=True)
 
 shuffled = alpha[:]
 random.shuffle(shuffled)
-decodeTable = dict(zip(alpha,shuffled))
-decodeTable[' '] = ' '
+encodeTable = dict(zip(alpha,shuffled))
+encodeTable[' '] = ' '
 
-crypted = map(decodeTable.get,phrase)
+crypted = map(encodeTable.get,phrase)
 cryptedTxt="".join(crypted)
 
 letterCount = countLetters(crypted)
@@ -98,11 +108,13 @@ decodeTable[' '] = ' '
 decrypted = map(decodeTable.get,cryptedTxt)
 decryptedTxt="".join(decrypted)
 
-print "Encrypted"
+print "Encrypted:"
 print cryptedTxt[0:1000]
-print "Decrypted with frequencies"
+print
+print "Decrypted with frequencies:"
 print decryptedTxt[0:1000]
-
+print "Codetable similarity "+str(codetableSimilarity(encodeTable, decodeTable))
+print
 #--------
 print "Reading dictionary"
 dictionaryfile = open('../ngerman.txt', 'r')
@@ -111,6 +123,7 @@ dictionaryfile.close()
 #--------
 
 print "Sorting dictionary by length"
+print
 dictionaryLen = dict()
 for word in dictionary:
     length = len(word)
@@ -120,7 +133,7 @@ for word in dictionary:
   
 #-----------
 
-print "Searching for wrong characters"
+print "Searching for wrong characters:"
 exchangeTable = dict()
 matchedWords = 0
 
@@ -138,20 +151,15 @@ for word in decryptedTxt.split(" "):
             matchedWords+=1
 
 reducedTable = reduceDecodeTable(exchangeTable, minOccurencies)
+print "Wrong characters:"
 pprint (exchangeTable)
+print "Exchanging characters with high probability:"
 print reducedTable
-print decryptedTxt[0:1000]
 #------------------
+decodeTable = updateDecodeTable(decodeTable, reducedTable)    
+decrypted = map(decodeTable.get,cryptedTxt)
+print "Decrypted after dictionary-foo:"
+print ("".join(decrypted)[0:1000])
+print "Codetable similarity "+str(codetableSimilarity(encodeTable, decodeTable))
 
-inTab = ""
-outTab = ""
-for key in reducedTable:
-    inTab += key
-    outTab+= reducedTable[key]
-transTab = maketrans(inTab, outTab)
-    
-print decryptedTxt.translate(transTab)[0:1000]
-#decodeTable = updateDecodeTable(decodeTable, reduceDecodeTable(exchangeTable))    
-#decrypted = map(decodeTable.get,cryptedTxt)
-#print ("".join(decrypted))
     

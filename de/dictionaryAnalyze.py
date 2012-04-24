@@ -5,7 +5,7 @@ Created on 10.04.2012
 '''
 
 """ Return the key of dictionary dic given the value"""
-def find_key(dic, val):
+def findKey(dic, val):
     return [k for k, v in dic.iteritems() if v == val][0]
 
 """ Creates a dictionary with the letters to be exchanged and their probablity """
@@ -38,11 +38,10 @@ def reduceDecodeTable(updateTable, minOccurencies):
 """ Changes the decoded letter in the codetable to the one in the updatetable 
 that is given under its key """
 def updateDecodeTable(decodeTable, updateTable):
-    for char in updateTable:
-        if char in decodeTable.values():
-            key = find_key(decodeTable,char)
-            decodeTable[key] = updateTable[char]
-            print char+" -> "+decodeTable[key]
+    for key, value in decodeTable.items():
+        if value in updateTable.keys():
+            decodeTable[key] = updateTable[value]
+            print value+" -> "+updateTable[value]
     return decodeTable
 
 """ Checks if string1 can be converted to string2 by character substitution 
