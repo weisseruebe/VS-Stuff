@@ -9,7 +9,7 @@ def findKey(dic, val):
     return [k for k, v in dic.iteritems() if v == val][0]
 
 """ Creates a dictionary with the letters to be exchanged and their probablity """
-def findWrongCharacters(decString, origString, charList):
+def findWrongCharacters(decString, origString, charList, factor):
     index = 0
     while index < len(decString):
         if decString[index] != origString[index]:
@@ -19,9 +19,9 @@ def findWrongCharacters(decString, origString, charList):
                 charList[wrongChar] = dict()
                                
             if not (rightChar in charList[wrongChar]):
-                charList[wrongChar][rightChar] = 1
+                charList[wrongChar][rightChar] = factor
             else:  
-                charList[wrongChar][rightChar] += 1
+                charList[wrongChar][rightChar] += factor
         
         index += 1
 
@@ -70,6 +70,7 @@ def patternMatch(string1, string2):
 def findSimilarWords(dictionary, word, minWordSimilarity):
     similarWords = []
     for dictWord in dictionary:
-        if patternMatch(word, dictWord) > minWordSimilarity:
+        sim = patternMatch(word, dictWord)
+        if sim > minWordSimilarity and sim < 1:
             similarWords.append(dictWord)
     return similarWords

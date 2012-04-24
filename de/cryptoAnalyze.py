@@ -11,16 +11,16 @@ from string import lower
 from de.dictionaryAnalyze import findSimilarWords, findWrongCharacters, reduceDecodeTable, updateDecodeTable
 
 """The minimal word similarity to be taken as similar"""
-minWordSimilarity = 0.7
+minWordSimilarity = 0.8
 
 """The minimal word length for accounted words"""
-minWordLength = 4
+minWordLength = 2
 
 """The maximal number of similar words for a word to be taken for the improvement"""
 maxSimilarWords = 3
 
 """The number of words to be taken for the dictionary improvement"""
-matchWords = 60
+matchWords = 100
 
 """The minimal number of occurencies for a wrong letter to be regarded as valid"""
 minOccurencies = 3
@@ -143,8 +143,9 @@ for word in decryptedTxt.split(" "):
         similarWords = findSimilarWords(wordsWithLength,word,minWordSimilarity)
 
         if (len(similarWords) <= maxSimilarWords) and (len(similarWords) > 0):
+            factor = maxSimilarWords/len(similarWords)
             for similarWord in similarWords:
-                findWrongCharacters(word, similarWord, exchangeTable)
+                findWrongCharacters(word, similarWord, exchangeTable, factor)
                 print word+" is similar to "+str(similarWord)
             print "Progress:"+str(matchedWords/float(matchWords))
             if (matchedWords>=matchWords): break
