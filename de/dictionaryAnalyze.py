@@ -9,7 +9,7 @@ def findKey(dic, val):
     return [k for k, v in dic.iteritems() if v == val][0]
 
 """ Creates a dictionary with the letters to be exchanged and their probablity """
-def findWrongCharacters(decString, origString, charList, factor):
+def findWrongCharacters(decString, origString, charList):
     index = 0
     while index < len(decString):
         if decString[index] != origString[index]:
@@ -19,9 +19,9 @@ def findWrongCharacters(decString, origString, charList, factor):
                 charList[wrongChar] = dict()
                                
             if not (rightChar in charList[wrongChar]):
-                charList[wrongChar][rightChar] = factor
+                charList[wrongChar][rightChar] = 1
             else:  
-                charList[wrongChar][rightChar] += factor
+                charList[wrongChar][rightChar] += 1
         
         index += 1
 

@@ -130,7 +130,7 @@ for word in dictionary:
     if not (dictionaryLen.has_key(length)):
         dictionaryLen[length] = []
     dictionaryLen[length].append(word)
-  
+
 #-----------
 
 print "Searching for wrong characters:"
@@ -143,9 +143,8 @@ for word in decryptedTxt.split(" "):
         similarWords = findSimilarWords(wordsWithLength,word,minWordSimilarity)
 
         if (len(similarWords) <= maxSimilarWords) and (len(similarWords) > 0):
-            factor = maxSimilarWords/len(similarWords)
             for similarWord in similarWords:
-                findWrongCharacters(word, similarWord, exchangeTable, factor)
+                findWrongCharacters(word, similarWord, exchangeTable)
                 print word+" is similar to "+str(similarWord)
             print "Progress:"+str(matchedWords/float(matchWords))
             if (matchedWords>=matchWords): break
